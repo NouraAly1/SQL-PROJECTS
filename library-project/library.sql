@@ -77,7 +77,7 @@ INSERT INTO Loans (LoanID, MemberID, ISBN, LoanDate, ReturnDate) VALUES
 (4, 103, '9780743273565', '2026-09-12', NULL),
 (5, 104, '9780553380163', '2026-09-18', NULL);
 
--- Show all records in each table (for the screenshots).
+-- Show every row that was just inserted, before the update and delete below change them.
 SELECT * FROM Books;
 SELECT * FROM Members;
 SELECT * FROM Loans;
@@ -105,9 +105,9 @@ WHERE Loans.MemberID = 101;
 -- The library bought 2 more copies of "A Brief History of Time",
 -- so its quantity goes from 1 to 3.
 -- WHERE picks the book by its ISBN (the primary key), so only
--- this one row changes. Without WHERE, every book would get 3.
+-- this one row changes. Without WHERE, every book's quantity would increase by 2.
 UPDATE Books
-SET Quantity = 3
+SET Quantity = Quantity + 2
 WHERE ISBN = '9780553380163';
 
 -- Show all books again to confirm the change.

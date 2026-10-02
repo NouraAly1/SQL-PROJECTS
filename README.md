@@ -1,8 +1,29 @@
 # Library Management System
 
-A SQLite project that tracks books, library members, and the loans that connect them.
+A SQLite script for a small library: books, members, and the loans that connect them.
 
-The script is `library-project/library.sql`. Running it builds `library-project/library.db`.
+The script is [`library-project/library.sql`](library-project/library.sql). It creates the tables, loads sample rows, and then retrieves, updates, and deletes data.
+
+## Try it
+
+macOS and most Linux systems already include `sqlite3`. From this folder:
+
+```bash
+sqlite3 -header -column :memory: < library-project/library.sql
+```
+
+The command runs the whole script in memory and prints each result with column headers. It does not save a database file.
+
+The output ends with three members and four loans. Omar Khalid and his loan are gone. In the book list just before that, *A Brief History of Time* has quantity 3.
+
+## What the script shows
+
+- Three related tables. `Loans` links a member to a book.
+- Primary keys, a unique email, and checks: quantity cannot go below zero, and a return date cannot come before the loan date.
+- Foreign keys, so a loan must refer to a real member and a real book.
+- A join that lists every book Sara Ahmed has borrowed.
+- An update that adds two copies of one book, chosen by its ISBN.
+- A delete that removes a member's loan first, because a member who still has a loan cannot be deleted.
 
 ## Tables
 
@@ -12,30 +33,24 @@ The script is `library-project/library.sql`. Running it builds `library-project/
 | Members | One row per member: id, name, email, and phone | MemberID is the primary key. Email must be unique |
 | Loans | One row each time a member borrows a book: who, which book, loan date, and return date | MemberID must match a member. ISBN must match a book |
 
-A loan cannot point at a member or a book that does not exist. A return date cannot be earlier than the loan date. The number of copies cannot go below zero.
+An empty return date means the book has not come back yet.
 
-## What the script does
+## What happens, in order
 
 1. Turns on foreign keys and recreates the three tables, so the script can be run again from a clean start.
 2. Inserts five books, four members, and five loans. Books and members are added first, because a loan can only refer to rows that already exist.
 3. Lists every book Sara Ahmed (MemberID 101) has borrowed, with the book details and the loan dates.
-4. Updates the quantity of *A Brief History of Time* from 1 to 3.
-5. Deletes Omar Khalid (MemberID 104). His loan is removed first, because a member who still has a loan cannot be deleted.
+4. Adds 2 to the quantity of *A Brief History of Time*, which takes it from 1 to 3.
+5. Deletes Omar Khalid (MemberID 104). His loan is removed first.
 
-An empty return date means the book has not come back yet.
+## Open it in the editor
 
-## Run it
+This folder includes a SQLTools connection named **library**. It uses the SQLite driver and opens `library-project/library.db`.
 
-From this folder:
+To create that file and then browse it:
 
 ```bash
 sqlite3 library-project/library.db < library-project/library.sql
 ```
 
-Each `SELECT` in the script prints its result in the terminal.
-
-## Open it in the editor
-
-The workspace includes a SQLTools connection named **library**. It uses the SQLite driver and opens `library-project/library.db`.
-
-Install the SQLTools extension and the SQLTools SQLite driver, then connect to **library** and run `library-project/library.sql`.
+Connect to **library** in SQLTools after the file exists.
